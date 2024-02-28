@@ -4,7 +4,7 @@
 <?endif?>
 <!-- ?define vcredist_x86 =  http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe ?>
 <?define vcredist_x64 =  http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x64.exe ? -->
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Fragment>
 		<!-- TODO: Put your code here. -->

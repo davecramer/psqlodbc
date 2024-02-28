@@ -200,6 +200,7 @@ function buildInstaller([string]$CPUTYPE)
 			} else {
 				$runtime_version1=[int]$msvclist[0]
 			}
+			Write-Host "$runtime_version1  $runtime_version0"
 			if ($runtime_version1 -eq $runtime_version0) {
 				$toolset_no1 = $toolset_no0
 			} else {
@@ -250,13 +251,18 @@ function buildInstaller([string]$CPUTYPE)
 	if ($libpqmem.length -gt $maxmem) {
 		throw("number of libpq related dlls exceeds $maxmem")
 	}
+	
 	for ($i=$libpqmem.length; $i -lt $maxmem; $i++) {
 		$libpqmem += ""
 	}
-
 	[string []]$libpqRelArgs=@()
 	for ($i=0; $i -lt $maxmem; $i++) {
-		$libpqRelArgs += ("-dLIBPQMEM$i=" + $libpqmem[$i])
+		if ($libpqmem[$i] -eq $Null) {
+			$libpqRelArgs += ("-d LIBPQMEM$i=NA" )
+		} else {
+			Write-Host "mem: $libpqmem[$i]"
+			$libpqRelArgs += ("-d LIBPQMEM$i=" + $libpqmem[$i])
+		}
 	}
 
 	if (-not(Test-Path -Path $CPUTYPE)) {
@@ -269,10 +275,9 @@ function buildInstaller([string]$CPUTYPE)
 	try {
 		pushd "$scriptPath"
 
-		Write-Host ".`nBuilding psqlODBC/$SUBLOC merge module..."
-		$BINBASE = GetObjbase ".."
+		Write-Host ".`nBuilding psqlODBC/$SUBLOC merge module..."		$BINBASE = GetObjbase ".."
 		$INSTBASE = GetObjbase ".\$CPUTYPE" "installer\$CPUTYPE"
-		candle -nologo $libpqRelArgs "-dPlatform=$CPUTYPE" "-dVERSION=$VERSION" "-dSUBLOC=$SUBLOC" "-dLIBPQBINDIR=$LIBPQBINDIR" "-dLIBPQMSVCDLL=$LIBPQMSVCDLL" "-dLIBPQMSVCSYS=$LIBPQMSVCSYS" "-dPODBCMSVCDLL=$PODBCMSVCDLL" "-dPODBCMSVPDLL=$PODBCMSVPDLL" "-dPODBCMSVCSYS=$PODBCMSVCSYS" "-dPODBCMSVPSYS=$PODBCMSVPSYS" "-dNoPDB=$NoPDB" "-dBINBASE=$BINBASE" -o $INSTBASE\psqlodbcm.wixobj psqlodbcm_cpu.wxs
+		wix build -d LIBPQMEM0= -d LIBPQMEM1= -d LIBPQMEM2= -d LIBPQMEM3= -d LIBPQMEM4= -d LIBPQMEM5= -d LIBPQMEM6= -d LIBPQMEM7= -d LIBPQMEM8= -d LIBPQMEM9= -d Platform=$CPUTYPE -d VERSION=$VERSION -d SUBLOC=$SUBLOC -d LIBPQBINDIR=$LIBPQBINDIR -d LIBPQMSVCDLL=$LIBPQMSVCDLL -d LIBPQMSVCSYS=$LIBPQMSVCSYS -d PODBCMSVCDLL=$PODBCMSVCDLL -d PODBCMSVPDLL=$PODBCMSVPDLL -d PODBCMSVCSYS=$PODBCMSVCSYS -d PODBCMSVPSYS=$PODBCMSVPSYS -d NoPDB=$NoPDB -d BINBASE=$BINBASE -o $INSTBASE\psqlodbcm.wixobj psqlodbcm_cpu.wxs
 		if ($LASTEXITCODE -ne 0) {
 			throw "Failed to build merge module"
 		}
@@ -285,7 +290,7 @@ function buildInstaller([string]$CPUTYPE)
 
 		Write-Host ".`nBuilding psqlODBC installer database..."
 
-		candle -nologo "-dPlatform=$CPUTYPE" "-dVERSION=$VERSION" "-dSUBLOC=$SUBLOC" "-dPRODUCTCODE=$PRODUCTCODE" "-dINSTBASE=$INSTBASE" -o $INSTBASE\psqlodbc.wixobj psqlodbc_cpu.wxs
+		wix build -nologo "-d Platform=$CPUTYPE" "-d VERSION=$VERSION" "-d SUBLOC=$SUBLOC" "-d PRODUCTCODE=$PRODUCTCODE" "-d INSTBASE=$INSTBASE" -o $INSTBASE\psqlodbc.wixobj psqlodbc_cpu.wxs
 		if ($LASTEXITCODE -ne 0) {
 			throw "Failed to build installer database"
 		}

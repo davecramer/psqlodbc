@@ -73,7 +73,7 @@ function unifyNodes($node1, $node2)
         foreach ($attrib in $attributes2)
         {
             $attribname = $attrib.name
-            if (($attributes1.Count -eq 0) -or ($attributes1.GetNamedItem($attribname) -eq $null))
+            if (($attributes1.Count -eq 0) -or ($null -eq $attributes1.GetNamedItem($attribname)))
             {
                 Write-Debug " Adding attribute=$attribname"
                 $addattr = $node1.OwnerDocument.ImportNode($attrib, $true)
@@ -91,7 +91,7 @@ function unifyNodes($node1, $node2)
             continue
         }
         $matchnode = $node1.SelectSingleNode($nodename)
-        if ($matchnode -eq $null)
+        if ($null -eq $matchnode)
         {
                 Write-Debug "Adding node=$nodename"
                 $addnode = $node1.OwnerDocument.ImportNode($child2, $true)
@@ -106,6 +106,8 @@ function getPGDir([xml]$configInfo, [string]$Platform, [string]$kind)
 {
 	if ($Platform -ieq "x64") {
 		$platinfo=$configInfo.Configuration.x64
+	} elseif ($Platform -ieq "arm64") {
+		$platinfo=$configInfo.Configuration.arm64
 	} else {
 		$platinfo=$configInfo.Configuration.x86
 	}
@@ -120,7 +122,7 @@ function getPGDir([xml]$configInfo, [string]$Platform, [string]$kind)
 	if ($result -ne "default") {
 		return $result
 	}
-	if ($Platform -ieq "x64") {
+	if ($Platform -ieq "x64" -or $Platform -ieq "arm64") {
 		if ($env:PROCESSOR_ARCHITECTURE -ieq "x86") {
 			$pgmfs = $env:ProgramW6432
 		} else {
@@ -171,10 +173,10 @@ function GetPackageVersion([xml]$configInfo, [string]$srcpath)
 {
 	$version_no = $configInfo.Configuration.version
 	if ("$version_no" -eq "") {
-		pushd "$srcpath"
+		Push-Location "$srcpath"
 		$splitItem = Get-Content ".\version.h" | Where-Object {($_.IndexOf("#define") -ge 0) -and ($_.IndexOf("POSTGRESDRIVERVERSION") -ge 0) -and ($_.IndexOF("`"") -ge 0)} | ForEach-Object {$_.split("`"")}
 		$version_no = $splitItem[1]
-		popd
+		Pop-Location
 	}
 	return $version_no
 }

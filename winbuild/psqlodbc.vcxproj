@@ -9,6 +9,10 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|arm64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -16,6 +20,10 @@
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|arm64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -106,8 +114,11 @@
   <PropertyGroup Condition="'$(Platform)'=='Win32'">
     <TARGET_CPU>x86</TARGET_CPU>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)'!='Win32'">
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
     <TARGET_CPU>x64</TARGET_CPU>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='arm64'">
+    <TARGET_CPU>arm64</TARGET_CPU>
   </PropertyGroup>
 
   <Import Project="psqlodbc.Cpp.props" />
@@ -138,10 +149,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
 
@@ -163,7 +180,7 @@
       <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
     </Link>
     <PreBuildEvent>
-      <Command>lib /def:$(srcPath)$(DTCDLL).def /machine:x86 /out:"$(outDir)\$(DTCLDLL).lib"</Command>
+      <Command>lib /def:$(srcPath)$(DTCDLL).def /machine:ARM /out:"$(outDir)\$(DTCLDLL).lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -185,6 +202,25 @@
       <Command>lib /def:$(srcPath)$(DTCDLL).def /machine:x64 /out:"$(outDir)\$(DTCLDLL).lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">
+    <ClCompile>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;$(ADD_DEFINES);DYNAMIC_LOAD;WIN_MULTITHREAD_SUPPORT;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ADD_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>$(RSC_DEFINES);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <DelayLoadDLLs>$(DELAY_LOAD_DLLS);%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalLibraryDirectories>$(ADD_LIBPATH);$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libpq.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;wsock32.lib;ws2_32.lib;secur32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>$(MAINDEF)</ModuleDefinitionFile>
+      <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
+    </Link>
+    <PreBuildEvent>
+      <Command>lib /def:$(srcPath)$(DTCDLL).def /machine:ARM64 /out:"$(outDir)\$(DTCLDLL).lib"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;$(ADD_DEFINES);DYNAMIC_LOAD;WIN_MULTITHREAD_SUPPORT;WIN32;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -204,7 +240,7 @@
       <Command>lib /def:$(srcPath)$(DTCDLL).def /machine:x86 /out:"$(outDir)\$(DTCDLL).lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">
     <ClCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;$(ADD_DEFINES);DYNAMIC_LOAD;WIN_MULTITHREAD_SUPPORT;WIN32;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ADD_INC);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -220,7 +256,7 @@
       <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
     </Link>
     <PreBuildEvent>
-      <Command>lib /def:$(srcPath)$(DTCDLL).def /machine:x64 /out:"$(outDir)\$(DTCDLL).lib"</Command>
+      <Command>lib /def:$(srcPath)$(DTCDLL).def /machine:ARM64 /out:"$(outDir)\$(DTCDLL).lib"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
