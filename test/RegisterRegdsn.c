@@ -51,6 +51,7 @@ static int inst_driver(const char *driver, const char *pathIn, const char *key_v
 	pcnt = strlen(psz) + 1;
 	psz += pcnt;
 	strncpy(psz, key_value_pairs, sizeof(szDriver) - pcnt);
+	fprintf( stderr, "Driver: %s, pathIn: %s", driver, pathIn);
 	for (pchr = psz; *pchr; pchr++)
 	{
 		if (*pchr == '|')
@@ -242,8 +243,8 @@ static int register_dsn(const char *driver, const char *dsn, const char *key_val
 
 	if (ret = dsnExists(dsn), ret != -1)
 		return ret;
-	if (ret = add_dsn(driver, dsn, key_value_pairs), ret != -1)
-		return ret;
+//	if (ret = add_dsn(driver, dsn, key_value_pairs), ret != -1)
+//		return ret;
 	fprintf(stderr, "\tAdding driver %s of %s\n", driver, pathIn);
 	if (ret = inst_driver(driver, pathIn, driver_key_value_pairs), ret != 0)
 		return ret;

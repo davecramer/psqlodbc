@@ -185,14 +185,14 @@ function msbfind_10_14
 	$regKey="HKLM:\Software\Wow6432Node\Microsoft\MSBuild\ToolsVersions\${toolsver}"
 	if (Test-Path -path $regkey) {
 		$msbitem=Get-ItemProperty $regKey
-		if ($msbitem -ne $null) {
+		if ($null -ne $msbitem) {
 			$msbindir=$msbitem.MSBuildToolsPath
 		}
 	} else {
 		$regKey="HKLM:\Software\Microsoft\MSBuild\ToolsVersions\${toolsver}"
 		if (Test-Path -path $regkey) {
 			$msbitem=Get-ItemProperty $regKey
-			if ($msbitem -ne $null) {
+			if ($null -ne $msbitem) {
 				$msbindir=$msbitem.MSBuildToolsPath
 			}
 		} else {
@@ -299,7 +299,7 @@ function dumpbinRecurs
 	if ($LASTEXITCODE -ne 0) {
 		throw "Failed to dumpbin ${dllfolder}\${dllname}"
 	}
-	if ($tmem -eq $Null) {
+	if ($Null -eq $tmem) {
 		return $instarray
 	}
 	if ($tmem.GetType().Name -eq "String") {
@@ -387,7 +387,7 @@ function find_vs_installation
 
 	$vsdir = ""
 # vssetup module is available?
-	if ($vssetup_available -and ($vsseup -eq $null)) {
+	if ($vssetup_available -and ($null -eq $vsseup)) {
 		try {
 			$vssetup = @(Get-VssetupInstance)
 		} catch [Exception] {
@@ -395,7 +395,7 @@ function find_vs_installation
 		}
 	}
 	$toolsnum = [int]$toolsver
-	if ($vssetup -ne $null) {
+	if ($null -ne $vssetup) {
 		$lslist = @($vssetup | where-object { $_.InstallationVersion.Major -eq $toolsnum } | foreach-object { $_.InstallationPath })
 		if ($lslist.Count -gt 0) {
 			$vsdir = $lslist[0]

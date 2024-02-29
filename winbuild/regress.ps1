@@ -69,7 +69,7 @@ Param(
 [string[]]$TestList,
 [switch]$Ansi,
 [string]$VCVersion,
-[ValidateSet("Win32", "x64", "both")]
+[ValidateSet("Win32", "x64", "arm64","both")]
 [string]$Platform="both",
 [string]$Toolset,
 [ValidateSet("", "4.0", "12.0", "14.0")]
@@ -207,6 +207,8 @@ function RunTest($scriptPath, $Platform, $testexes)
 	# Run regression tests
 	if ($Platform -eq "x64") {
 		$targetdir="test_x64"
+	} elseif ($Platform -eq "arm64") {
+		$targetdir="test_arm64"
 	} else {
 		$targetdir="test_x86"
 	}
@@ -282,6 +284,7 @@ function SpecialDsn($testdsn, $testdriver)
 		Write-Host "`tAdding System DSN=$testdsn Driver=$testdriver"
 		$prop = input-dsninfo
 		$prop += "|Debug=0|Commlog=0|ConnSettings=set+lc_messages='C'"
+		Write-Host "Arguments: register_dsn $testdriver $testdsn $prop `"$dlldir`" Driver=${dllname}|Setup=${setup}"
 		$proc = Start-Process $regProgram -Verb runas -Wait -PassThru -ArgumentList "register_dsn $testdriver $testdsn $prop `"$dlldir`" Driver=${dllname}|Setup=${setup}"
 		if ($proc.ExitCode -ne 0) {
 			throw "`tAddDsn $testdsn error"
@@ -397,20 +400,31 @@ foreach ($pl in $pary) {
 	if (($target -ieq "Clean") -or ($target -ieq "Build")) {
 		continue
 	}
-
 	switch ($pl) {
 	 "Win32" {
 			$targetdir="test_x86"
 			$bit="32-bit"
 			$dlldir="$objbase\x86_${ansi_dir_part}_$DriverConfiguration"
 		}
-	 default {
+	 "arm64" {
+		$targetdir="test_arm64"
+		$bit="64-bit"
+		$dlldir="$objbase\arm64_${ansi_dir_part}_$DriverConfiguration"
+
+	 }	
+	 "x64" {
+		$targetdir="test_x64"
+		$bit="64-bit"
+		$dlldir="$objbase\x64_${ansi_dir_part}_$DriverConfiguration"
+	}
+	default {
 			$targetdir="test_x64"
 			$bit="64-bit"
 			$dlldir="$objbase\x64_${ansi_dir_part}_$DriverConfiguration"
 		}
 	}
-	pushd $pushdir\$targetdir
+
+	Push-Location $pushdir\$targetdir
 
 	$env:PSQLODBC_TEST_DSN = $testdsn
 	try {
@@ -419,7 +433,7 @@ foreach ($pl in $pary) {
 	} catch [Exception] {
 		throw $error[0]
 	} finally {
-		popd
+		Pop-Location
 		$env:PSQLODBC_TEST_DSN = $null
 	}
 }
