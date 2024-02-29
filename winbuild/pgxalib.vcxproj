@@ -9,9 +9,9 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
+    <ProjectConfiguration Include="Debug|arm64">
       <Configuration>Debug</Configuration>
-      <Platform>ARM64</Platform>
+      <Platform>arm64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -23,7 +23,7 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|arm64">
       <Configuration>Release</Configuration>
-      <Platform>ARM64</Platform>
+      <Platform>arm64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -109,8 +109,8 @@
   <PropertyGroup Condition="'$(Platform)'=='x64'">
     <TARGET_CPU>x64</TARGET_CPU>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)'=='ARM64'">
-    <TARGET_CPU>arm64</TARGET_CPU>
+  <PropertyGroup Condition="'$(Platform)'=='arm64'">
+    <TARGET_CPU>ARM64</TARGET_CPU>
   </PropertyGroup>
 
   <Import Project="psqlodbc.Cpp.props" />

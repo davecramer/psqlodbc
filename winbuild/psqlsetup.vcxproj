@@ -11,7 +11,7 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|arm64">
       <Configuration>Debug</Configuration>
-      <Platform>ARM64</Platform>
+      <Platform>arm4</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -23,7 +23,7 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|arm64">
       <Configuration>Release</Configuration>
-      <Platform>ARM64</Platform>
+      <Platform>arm64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
