@@ -19,16 +19,20 @@ permissions:
   contents: read
 
 jobs:
-  build_windows:
+  get_windows:
     runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
       with:
         repository: "https://github.com/postgres/postgres.git"
+
+  build_windows:
+    runs-on: windows-latest
+    steps:
     - uses: actions/setup-python@v1
     - uses: BSFishy/meson-build@v1.0.3
       with:
         action: build
         directory: build
-        
+
