@@ -484,7 +484,6 @@ SC_Constructor(ConnectionClass *conn)
 char
 SC_Destructor(StatementClass *self)
 {
-	char cRet = TRUE;
 	CSTR func	= "SC_Destructor";
 	QResultClass	*res = SC_get_Result(self);
 
@@ -510,12 +509,6 @@ SC_Destructor(StatementClass *self)
 	}
 
 	SC_initialize_stmts(self, TRUE);
-
-	if(self->hdbc && !self->hdbc->pqconn)
-	{
-		SC_set_error(self, STMT_COMMUNICATION_ERROR, "connection error.", func);
-		cRet = FALSE;
-	}
 
     /* Free the parsed table information */
 	SC_initialize_cols_info(self, FALSE, TRUE);
@@ -544,7 +537,7 @@ SC_Destructor(StatementClass *self)
 
 	MYLOG(0, "leaving\n");
 
-	return cRet;
+	return TRUE;
 }
 
 void
@@ -888,10 +881,12 @@ SC_recycle_statement(StatementClass *self)
 		return FALSE;
 	}
 
-	if (SC_get_conn(self)->unnamed_prepared_stmt == self)
-		SC_get_conn(self)->unnamed_prepared_stmt = NULL;
-
 	conn = SC_get_conn(self);
+	if (!conn)
+		return TRUE;
+
+	if (conn->unnamed_prepared_stmt == self)
+		conn->unnamed_prepared_stmt = NULL;
 	switch (self->status)
 	{
 		case STMT_ALLOCATED:

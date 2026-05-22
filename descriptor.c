@@ -428,15 +428,19 @@ PGAPI_FreeDesc(SQLHDESC DescriptorHandle)
 	DC_Destructor(desc);
 	if (!desc->deschd.embedded)
 	{
-		int	i;
 		ConnectionClass	*conn = DC_get_conn(desc);
 
-		for (i = 0; i < conn->num_descs; i++)
+		if (conn)
 		{
-			if (conn->descs[i] == desc)
+			int	i;
+
+			for (i = 0; i < conn->num_descs; i++)
 			{
-				conn->descs[i] = NULL;
-				break;
+				if (conn->descs[i] == desc)
+				{
+					conn->descs[i] = NULL;
+					break;
+				}
 			}
 		}
 		free(desc);
